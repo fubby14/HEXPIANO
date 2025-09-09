@@ -1,6 +1,6 @@
 # HEXPIANO.js - Function Interface Documentation
 
-**HEXPIANO.js** is the core JavaScript audio engine that powers the HEXPIANO step sequencer. This documentation provides a complete reference for all function interfaces, input/output specifications, and parameter mappings used in the audio synthesis system.
+**HEXPIANO.js** https://arweave.net/ykZCJW3NS06m7aw1HGfylsg-pICz6X95H4Fw8KaZ7e8 is the core JavaScript audio engine that powers the HEXPIANO step sequencer. This documentation provides a complete reference for all function interfaces, input/output specifications, and parameter mappings used in the audio synthesis system.
 
 The engine implements real-time audio synthesis using Web Audio API, featuring polyphonic voice management, glitch effects processing, MIDI integration, and note conversion utilities. All functions are designed with clear input/output contracts to enable easy integration and extension.
 
