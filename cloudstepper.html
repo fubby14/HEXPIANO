@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>cloudstepper POWER BY THE HEXPIANO</title>
+  <style>
+    :root { 
+      --bg:#050a12; 
+      --panel:#080e18; 
+      --line:#0f1624; 
+      --ink:#b8c6e8; 
+      --muted:#5a6b8a; 
+      --acc:#ff2bd6; 
+      --acc2:#00eaff;
+      --bevel-hi:rgba(255,255,255,0.03);
+      --bevel-lo:rgba(0,0,0,0.7);
+      --glow-soft: 0 0 8px rgba(255,43,214,0.25), 0 0 18px rgba(0,234,255,0.15);
+      --glow-acc: 0 0 10px rgba(255,43,214,0.6), 0 0 22px rgba(255,43,214,0.35);
+      --glow-cyan: 0 0 10px rgba(0,234,255,0.6), 0 0 22px rgba(0,234,255,0.35);
+    }
+    * { box-sizing: border-box; }
+    body { font-family: "Courier New", ui-monospace, "SFMono-Regular", Menlo, Monaco, "Liberation Mono", monospace; background:var(--bg); color:var(--ink); margin:0; line-height:1.4; position:relative; overflow-x:hidden; }
+    body::before { content:""; position:fixed; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:9999; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E"); opacity:0.15; animation:vhs-noise 0.1s infinite; }
+    body::after { content:""; position:fixed; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:9998; background:linear-gradient(transparent 50%, rgba(0,0,0,0.1) 50%); background-size:100% 2px; animation:vhs-scanlines 0.1s linear infinite; }
+    .container { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+    header { padding:12px 16px; border-bottom:1px solid var(--line); position:sticky; top:0; background:linear-gradient(180deg,#070c14,#050a12); box-shadow: 0 2px 0 rgba(0,0,0,0.8), inset 0 -2px 0 rgba(255,255,255,0.03); }
+    h1 { font-size:18px; margin:0; letter-spacing:1px; font-weight:700; color:var(--ink); text-shadow: 0 0 6px rgba(255,43,214,0.5), 0 0 12px rgba(0,234,255,0.35); }
+    .controls { display:flex; flex-wrap:wrap; gap:14px; margin-top:8px; align-items:flex-end; }
+    .control { display:flex; flex-direction:column; gap:6px; min-width:150px; }
+    .control input[type=range]{ width: 240px; }
+    .label{ font-size:11px; color:var(--muted); }
+    .value{ font-size:11px; color:var(--acc);} 
+    button, select{font-family: "Courier New", ui-monospace, "SFMono-Regular", Menlo, Monaco, "Liberation Mono", monospace; background:linear-gradient(180deg,#0a0e18,#080e18); color:var(--ink); border:1px solid var(--acc); border-radius:3px; padding:6px 10px; box-shadow: var(--glow-soft); }
+    button:hover{ box-shadow: var(--glow-acc); }
+    button:active{ transform: translateY(1px); }
+
+    /* Dark dropdown popup and options */
+    select, option, optgroup { color-scheme: dark; }
+    option, optgroup { background:#040810; color:var(--ink); }
+    option:checked, option:hover { background:#0a0f1a; color:var(--ink); }
+    option:disabled { color:#3a465c; }
+    .seq-controls select:focus { outline:none; border-color: var(--acc2); box-shadow: var(--glow-cyan); }
+    .seq-controls select { -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-right: 28px; }
+
+    /* Glitch effects section */
+    .glitch-section { margin: 16px 0; padding: 12px; background: linear-gradient(180deg, #070c14, #050a12); border: 1px solid var(--line); border-radius: 4px; box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 0 0 12px rgba(255,43,214,0.08); }
+    .glitch-section h3 { margin: 0 0 12px 0; font-size: 14px; color: var(--acc); text-shadow: 0 0 6px rgba(255,43,214,0.5); }
+    .glitch-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .glitch-group { display: flex; flex-direction: column; gap: 6px; }
+    .glitch-group .label { font-size: 11px; color: var(--muted); }
+    .glitch-group .value { font-size: 11px; color: var(--acc); }
+    .glitch-group input[type=range] { width: 100%; }
+
+    /* VHS Noise Effects */
+    @keyframes vhs-noise {
+      0% { opacity: 0.1; transform: translateX(0px); }
+      10% { opacity: 0.2; transform: translateX(-1px); }
+      20% { opacity: 0.15; transform: translateX(1px); }
+      30% { opacity: 0.25; transform: translateX(-0.5px); }
+      40% { opacity: 0.1; transform: translateX(0.5px); }
+      50% { opacity: 0.3; transform: translateX(-1px); }
+      60% { opacity: 0.15; transform: translateX(1px); }
+      70% { opacity: 0.2; transform: translateX(-0.5px); }
+      80% { opacity: 0.1; transform: translateX(0.5px); }
+      90% { opacity: 0.25; transform: translateX(-1px); }
+      100% { opacity: 0.1; transform: translateX(0px); }
+    }
+    @keyframes vhs-scanlines {
+      0% { transform: translateY(-100vh); opacity: 0.3; }
+      50% { transform: translateY(0vh); opacity: 0.1; }
+      100% { transform: translateY(100vh); opacity: 0.3; }
+    }
+    @keyframes vhs-flicker {
+      0%, 100% { opacity: 1; }
+      98% { opacity: 0.95; }
+      99% { opacity: 0.9; }
+    }
+    @keyframes vhs-distort {
+      0%, 100% { transform: scaleX(1); }
+      50% { transform: scaleX(1.001); }
+    }
+    
+    /* Apply VHS effects to main content */
+    .container { animation: vhs-flicker 0.1s infinite, vhs-distort 2s infinite; }
+    header { animation: vhs-flicker 0.1s infinite; }
+    #sequencer { animation: vhs-flicker 0.1s infinite; }
+    .glitch-section { animation: vhs-flicker 0.1s infinite; }
+
+    /* Neon slider styling */
+    input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; height: 18px; }
+    input[type=range]::-webkit-slider-runnable-track { height: 6px; background: linear-gradient(90deg,rgba(255,43,214,0.35),rgba(0,234,255,0.35)); border:1px solid var(--line); border-radius:3px; box-shadow: inset 0 0 8px rgba(0,0,0,0.6); }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width:18px; height:18px; margin-top:-6px; background: radial-gradient(circle at 30% 30%, #fff, #ffe3f7 40%, #ff9be6 70%, #ff2bd6 100%); border:1px solid var(--acc); border-radius:50%; box-shadow: var(--glow-acc); }
+    input[type=range]::-moz-range-track { height: 6px; background: linear-gradient(90deg,rgba(255,43,214,0.35),rgba(0,234,255,0.35)); border:1px solid var(--line); border-radius:3px; box-shadow: inset 0 0 8px rgba(0,0,0,0.6); }
+    input[type=range]::-moz-range-thumb { width:18px; height:18px; background: radial-gradient(circle at 30% 30%, #fff, #ffe3f7 40%, #ff9be6 70%, #ff2bd6 100%); border:1px solid var(--acc); border-radius:50%; box-shadow: var(--glow-acc); }
+
+    /* Step sequencer */
+    #sequencer { margin: 20px 0; max-width: 100%; overflow-x: auto; background:linear-gradient(180deg,#080e18,#050a12); border:1px solid var(--line); border-radius:4px; box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 0 24px rgba(0,234,255,0.06); padding:12px; }
+    .seq-controls { display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }
+    .seq-controls .label{ margin-left:4px; }
+    .seq-controls select{ background:linear-gradient(180deg,#0a0e18,#080e18); color:var(--ink); border:1px solid var(--acc2); border-radius:3px; padding:6px 10px; box-shadow: var(--glow-cyan); }
+    .seq-controls input[type=text]{ background:linear-gradient(180deg,#0a0e18,#080e18); color:var(--ink); border:1px solid var(--line); border-radius:3px; padding:6px 10px; box-shadow: inset 0 0 8px rgba(0,0,0,0.8), 0 0 12px rgba(0,234,255,0.06); min-width: 320px; }
+    
+    #grid { display:flex; flex-direction:column; gap:6px; }
+    .seq-row { display:flex; align-items:center; gap:6px; }
+    .label-cell { width:64px; text-align:right; padding:4px 6px; color:#8aa0c6; background:linear-gradient(180deg,#080e18,#050a12); border:1px solid var(--line); border-radius:3px; box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 0 10px rgba(0,234,255,0.04); }
+    .cell { width:26px; height:26px; border:1px solid #0f1624; border-radius:3px; background: radial-gradient(circle at 40% 40%, #080e18 0%, #050a12 60%, #03060c 100%); box-shadow: inset 0 0 10px rgba(0,0,0,0.9); cursor:pointer; position:relative; transition: transform 0.05s ease-out; }
+    .cell:hover { transform: scale(1.05); }
+    .cell.active { background: radial-gradient(circle at 40% 40%, rgba(255,43,214,0.25) 0%, rgba(255,43,214,0.12) 60%, rgba(255,43,214,0.05) 100%); border-color: var(--acc); box-shadow: var(--glow-acc), inset 0 0 16px rgba(255,43,214,0.15); }
+    .cell.playhead { filter: brightness(1.2); }
+    .cell.playhead::after { content:""; position:absolute; inset:-2px; border:1px dashed var(--acc2); border-radius:4px; pointer-events:none; box-shadow: var(--glow-cyan); }
+
+    footer { color:#5a6b8a; font-size:12px; text-align:center; padding:12px 0 24px; }
+    .badge{ font-size:12px; padding:4px 8px; border:1px solid var(--acc); border-radius:12px; display:inline-flex; align-items:center; gap:6px; background:rgba(8,14,24,0.9); color:var(--ink); box-shadow: var(--glow-acc); font-family: Consolas, "Courier New", monospace; }
+    kbd{ background:#080e18; border:1px solid var(--acc2); border-radius:3px; padding:2px 6px; font-family: Consolas, "Courier New", monospace; font-size:11px; box-shadow: var(--glow-cyan); color:var(--ink); }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>cloudstepper POWER BY THE HEXPIANO</h1>
+    <div class="controls">
+      <div class="control">
+        <span class="label">Octave</span>
+        <div>
+          <button id="octDown">−</button>
+          <span id="octaveVal" class="badge">4</span>
+          <button id="octUp">+</button>
+        </div>
+      </div>
+      <div class="control"><span class="label">Attack</span><input id="attack" type="range" min="0" max="0.06" step="0.001" value="0.002"><span class="value" id="attackVal">0.002s</span></div>
+      <div class="control"><span class="label">Decay</span><input id="decay" type="range" min="0.05" max="1.2" step="0.01" value="0.16"><span class="value" id="decayVal">0.16s</span></div>
+      <div class="control"><span class="label">Sustain</span><input id="sustain" type="range" min="0" max="1" step="0.01" value="0.5"><span class="value" id="sustainVal">0.50</span></div>
+      <div class="control"><span class="label">Release</span><input id="release" type="range" min="0.03" max="2.5" step="0.01" value="0.65"><span class="value" id="releaseVal">0.65s</span></div>
+      <div class="control"><span class="label">Tone (brightness)</span><input id="tone" type="range" min="1200" max="14000" step="10" value="8000"><span class="value" id="toneVal">8.0kHz</span></div>
+      <div class="control"><span class="label">Presence (high-shelf)</span><input id="presence" type="range" min="-6" max="12" step="0.1" value="4"><span class="value" id="presenceVal">+4.0 dB</span></div>
+      <div class="control"><span class="label">Detune (chorus)</span><input id="detune" type="range" min="0" max="25" step="0.1" value="4"><span class="value" id="detuneVal">4.0c</span></div>
+      <div class="control"><span class="label">Hammer hardness</span><input id="hard" type="range" min="0" max="1" step="0.01" value="0.55"><span class="value" id="hardVal">0.55</span></div>
+      <div class="control"><span class="label">Key noise</span><input id="keynoise" type="range" min="0" max="1" step="0.01" value="0.25"><span class="value" id="keynoiseVal">0.25</span></div>
+      <div class="control"><span class="label">Reverb</span><input id="reverb" type="range" min="0" max="1" step="0.01" value="0.12"><span class="value" id="reverbVal">12%</span></div>
+      <div class="control">
+        <span class="label">Sustain</span>
+        <button id="sustainBtn">Off</button>
+      </div>
+      <div class="control">
+        <span class="label">MIDI</span>
+        <span id="midiStatus" class="badge">not connected</span>
+      </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="sequencer" aria-label="step sequencer">
+      <div class="seq-controls">
+      <button id="playBtn">Play</button>
+      <span class="label">BPM</span>
+      <input id="bpm" type="range" min="40" max="200" step="1" value="120">
+      <span id="bpmVal" class="value">120</span>
+      <span class="label">Steps</span>
+      <select id="stepsSel">
+        <option value="8">8</option>
+        <option value="12">12</option>
+        <option value="16" selected>16</option>
+      </select>
+      <span class="label">Swing</span>
+      <input id="swing" type="range" min="0" max="0.6" step="0.01" value="0">
+      <span id="swingVal" class="value">0.00</span>
+      <button id="clearBtn">Clear</button>
+      <span class="label">Preset</span>
+      <select id="notesPreset">
+        <option value="">Choose…</option>
+        <option value="C_MAJOR">C Major</option>
+        <option value="A_NAT_MINOR">A Minor</option>
+        <option value="C_MIN_PENT">C Minor Pentatonic</option>
+        <option value="C_MAJ7_ARP">C Maj7 Arp</option>
+        <option value="C_CHROMATIC">Chromatic</option>
+      </select>
+      <span class="label">Notes</span>
+      <input id="notesInput" type="text" placeholder="C4 D#4 F4 G4 A4 B4 C5">
+      <button id="notesApplyBtn">Apply</button>
+      </div>
+      
+      <div class="glitch-section">
+        <h3>Glitch Effects</h3>
+        <div class="glitch-controls">
+          <div class="glitch-group">
+            <span class="label">Mix</span>
+            <input id="glitchMix" type="range" min="0" max="1" step="0.01" value="0.35">
+            <span id="glitchMixVal" class="value">0.35</span>
+          </div>
+          <div class="glitch-group">
+            <span class="label">Ring Rate</span>
+            <input id="ringRate" type="range" min="0.5" max="200" step="0.1" value="12">
+            <span id="ringRateVal" class="value">12.0Hz</span>
+          </div>
+          <div class="glitch-group">
+            <span class="label">Ring Depth</span>
+            <input id="ringDepth" type="range" min="0" max="1" step="0.01" value="0.6">
+            <span id="ringDepthVal" class="value">0.60</span>
+          </div>
+          <div class="glitch-group">
+            <span class="label">Crush Bits</span>
+            <input id="crushBits" type="range" min="4" max="16" step="1" value="8">
+            <span id="crushBitsVal" class="value">8</span>
+          </div>
+          <div class="glitch-group">
+            <span class="label">Downsample</span>
+            <input id="downsample" type="range" min="1" max="16" step="1" value="4">
+            <span id="downsampleVal" class="value">4</span>
+          </div>
+          <div class="glitch-group">
+            <span class="label">Jitter</span>
+            <input id="jitter" type="range" min="0" max="50" step="1" value="12">
+            <span id="jitterVal" class="value">12ms</span>
+          </div>
+          <div class="glitch-group">
+            <span class="label">Stutter Prob</span>
+            <input id="stutterProb" type="range" min="0" max="0.8" step="0.01" value="0.2">
+            <span id="stutterProbVal" class="value">0.20</span>
+          </div>
+          <div class="glitch-group">
+            <span class="label">Stutter Repeats</span>
+            <input id="stutterRepeats" type="range" min="1" max="4" step="1" value="2">
+            <span id="stutterRepeatsVal" class="value">2</span>
+          </div>
+          <div class="glitch-group">
+            <span class="label">Drop Prob</span>
+            <input id="dropProb" type="range" min="0" max="0.6" step="0.01" value="0.15">
+            <span id="dropProbVal" class="value">0.15</span>
+          </div>
+        </div>
+      </div>
+      
+      <div id="grid"></div>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      click squares to toggle notes. use the controls above to play, set BPM, steps, swing, and note presets.
+    </div>
+  </footer>
+
+  <script src="HEXPIANO.js"></script>
+</body>
+</html>
