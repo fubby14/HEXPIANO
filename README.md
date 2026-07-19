@@ -8,11 +8,11 @@ The current front door is the **Piano Genome Lab**, a deliberately narrow listen
 
 ### Voices
 
-- **Crystal** — the default candidate, with clear modal strings, an expanded soundboard, and a glassy tail
+- **Crystal Concert** — the default candidate, with register-scaled unison strings, velocity-shaped hammer bands, duplex resonance, long bass decay, and a delayed concert-hall bloom
 - **Ivory** — rounded body, defined hammer, and the most familiar piano balance
 - **Wire** — the stronger alternate, with a grand strike, stretched metallic harmonics, and long soundboard bloom
 
-All three voices are generated in real time with the native Web Audio API. No piano samples are included yet.
+All three voices are generated in real time with the native Web Audio API. Crystal Concert remains fully procedural: no piano samples are included yet.
 
 ### Tunings
 
@@ -55,6 +55,7 @@ This checks the JavaScript syntax and the frequency/tuning contracts with Node's
 index.html          Piano Genome Lab interface
 styles.css          Instrument-panel presentation
 src/engine.js       Web Audio voice generation and master signal path
+src/concert-voicing.js  Register, string, strike, and hammer behavior
 src/tuning.js       Temperament math and pitch descriptions
 src/app.js          Keyboard, MIDI, controls, and visual feedback
 test/               Tuning contract tests
@@ -68,4 +69,4 @@ HEXPIANO.js         Preserved original HEXPIANO engine
 
 ## Next sound milestone
 
-Crystal is the current lead after the first low-to-high listening pass. Deepen its identity next with sympathetic resonance, half-pedaling, release behavior, a full keyboard, and optional sampled hammer transients while keeping Wire available as the alternate.
+Crystal is the current lead after the first low-to-high listening pass. The concert pass adds multi-string scaling, register-dependent decay, duplex bloom, dual-band hammer attack, damper noise, soundboard coupling, and a pre-delayed hall. The next decision should come from listening before adding half-pedaling, a full keyboard, or optional sampled hammer transients.

@@ -118,7 +118,8 @@ function chooseEngine(profile) {
     button.setAttribute("aria-pressed", String(selected));
   });
   document.body.dataset.engine = profile;
-  statusMessage.textContent = `${profile[0].toUpperCase()}${profile.slice(1)} voice armed`;
+  const displayName = profile === "crystal" ? "Crystal Concert" : `${profile[0].toUpperCase()}${profile.slice(1)}`;
+  statusMessage.textContent = `${displayName} voice armed`;
 }
 
 function chooseTuning(tuningId) {
