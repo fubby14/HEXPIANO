@@ -11,7 +11,7 @@
     <title>HEXPIANO — Piano Genome Lab</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body data-engine="wire">
+  <body data-engine="crystal">
     <div class="ambient-grid" aria-hidden="true"></div>
     <header class="masthead">
       <a class="wordmark" href="./" aria-label="HEXPIANO home">
@@ -20,7 +20,7 @@
       </a>
       <div class="lab-label">
         <span class="status-light" aria-hidden="true"></span>
-        <span id="status-message">Wire laboratory ready</span>
+        <span id="status-message">Crystal laboratory ready</span>
       </div>
       <a class="legacy-link" href="./cloudstepper.html">Legacy Cloudstepper ↗</a>
     </header>
@@ -38,7 +38,7 @@
       </section>
 
       <section class="engine-selector" aria-label="Sound engine selection">
-        <button class="engine-card" type="button" data-engine="crystal" aria-pressed="false">
+        <button class="engine-card selected" type="button" data-engine="crystal" aria-pressed="true">
           <span class="engine-number">01</span>
           <span class="engine-copy">
             <strong>Crystal</strong>
@@ -54,7 +54,7 @@
           </span>
           <kbd>2</kbd>
         </button>
-        <button class="engine-card selected" type="button" data-engine="wire" aria-pressed="true">
+        <button class="engine-card" type="button" data-engine="wire" aria-pressed="false">
           <span class="engine-number">03</span>
           <span class="engine-copy">
             <strong>Wire</strong>
@@ -165,7 +165,7 @@
         <span class="hex-outline" aria-hidden="true">⬡</span>
         <p>
           <strong>Listening prompt</strong>
-          Does Wire keep its identity from the low octave through the high one—and does Crystal still challenge it?
+          Does Crystal keep its clarity and weight from the low octave through the high one?
         </p>
       </aside>
     </main>

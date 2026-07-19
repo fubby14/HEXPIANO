@@ -257,7 +257,7 @@ export class PianoEngine extends EventTarget {
     this.master = null;
     this.analyser = null;
     this.voices = new Map();
-    this.engineProfile = "wire";
+    this.engineProfile = "crystal";
     this.tuning = "equal";
     this.brightness = 0.68;
     this.body = 0.78;

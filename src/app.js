@@ -296,7 +296,7 @@ window.addEventListener("beforeunload", () => window.cancelAnimationFrame(scopeF
 octaveSlider.min = String(OCTAVE_RANGE.min);
 octaveSlider.max = String(OCTAVE_RANGE.max);
 setOctave(OCTAVE_RANGE.initial);
-chooseEngine("wire");
+chooseEngine("crystal");
 chooseTuning("equal");
 resizeCanvas();
 drawScope();

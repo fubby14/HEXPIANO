@@ -8,9 +8,9 @@ The current front door is the **Piano Genome Lab**, a deliberately narrow listen
 
 ### Voices
 
-- **Crystal** — clear modal strings with an expanded soundboard and glassy tail
+- **Crystal** — the default candidate, with clear modal strings, an expanded soundboard, and a glassy tail
 - **Ivory** — rounded body, defined hammer, and the most familiar piano balance
-- **Wire** — the default candidate, with a grand strike, stretched metallic harmonics, and long soundboard bloom
+- **Wire** — the stronger alternate, with a grand strike, stretched metallic harmonics, and long soundboard bloom
 
 All three voices are generated in real time with the native Web Audio API. No piano samples are included yet.
 
@@ -68,4 +68,4 @@ HEXPIANO.js         Preserved original HEXPIANO engine
 
 ## Next sound milestone
 
-Wire is the current lead. Compare its low-to-high octave identity against Crystal, then deepen the winner with sympathetic resonance, half-pedaling, release behavior, a full keyboard, and optional sampled hammer transients.
+Crystal is the current lead after the first low-to-high listening pass. Deepen its identity next with sympathetic resonance, half-pedaling, release behavior, a full keyboard, and optional sampled hammer transients while keeping Wire available as the alternate.
