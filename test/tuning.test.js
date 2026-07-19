@@ -3,10 +3,12 @@ import test from "node:test";
 
 import {
   TUNINGS,
+  OCTAVE_RANGE,
   centsFromEqual,
   describePitch,
   equalFrequency,
   noteName,
+  octaveStartMidi,
   tuningFrequency,
 } from "../src/tuning.js";
 
@@ -40,4 +42,13 @@ test("note labels and pitch descriptions remain human-readable", () => {
   assert.equal(noteName(61), "C♯4");
   assert.equal(noteName(72), "C5");
   assert.deepEqual(Object.keys(describePitch(60, "equal")), ["midi", "name", "frequency", "cents"]);
+});
+
+test("octave windows map to C notes and clamp to the playable rail", () => {
+  assert.equal(octaveStartMidi(OCTAVE_RANGE.min), 24);
+  assert.equal(octaveStartMidi(4), 60);
+  assert.equal(octaveStartMidi(OCTAVE_RANGE.max), 84);
+  assert.equal(octaveStartMidi(-20), 24);
+  assert.equal(octaveStartMidi(99), 84);
+  assert.equal(octaveStartMidi("not-an-octave"), 60);
 });

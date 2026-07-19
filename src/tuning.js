@@ -2,6 +2,8 @@ const A4_MIDI = 69;
 const A4_FREQUENCY = 440;
 const C4_MIDI = 60;
 
+export const OCTAVE_RANGE = Object.freeze({ min: 1, max: 6, initial: 4 });
+
 const JUST_RATIOS = [
   1,
   16 / 15,
@@ -90,6 +92,14 @@ export function noteName(midi) {
   const pitchClass = ((midi % 12) + 12) % 12;
   const octave = Math.floor(midi / 12) - 1;
   return `${NOTE_NAMES[pitchClass]}${octave}`;
+}
+
+export function octaveStartMidi(octave) {
+  const rounded = Math.round(Number(octave));
+  const safeOctave = Number.isFinite(rounded)
+    ? Math.max(OCTAVE_RANGE.min, Math.min(OCTAVE_RANGE.max, rounded))
+    : OCTAVE_RANGE.initial;
+  return 12 * (safeOctave + 1);
 }
 
 export function describePitch(midi, tuningId = "equal") {

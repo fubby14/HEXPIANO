@@ -3,20 +3,22 @@ import { tuningFrequency } from "./tuning.js";
 const ENGINE_PROFILES = Object.freeze({
   crystal: {
     partials: [
-      [1, 1, 1.45],
-      [2, 0.39, 1.08],
-      [3, 0.2, 0.78],
-      [4, 0.11, 0.56],
-      [5, 0.075, 0.44],
-      [6, 0.045, 0.35],
-      [8, 0.023, 0.26],
-      [10, 0.012, 0.21],
+      [1, 1, 1.78],
+      [2, 0.39, 1.32],
+      [3, 0.2, 0.95],
+      [4, 0.11, 0.68],
+      [5, 0.075, 0.52],
+      [6, 0.045, 0.42],
+      [8, 0.023, 0.31],
+      [10, 0.012, 0.24],
     ],
     stretch: 0.000035,
     attack: 0.003,
-    release: 0.62,
+    release: 0.78,
     hammer: 0.23,
     color: 1.08,
+    soundboard: 0.82,
+    bloom: 1.18,
   },
   ivory: {
     partials: [
@@ -33,22 +35,26 @@ const ENGINE_PROFILES = Object.freeze({
     release: 0.76,
     hammer: 0.58,
     color: 0.92,
+    soundboard: 0.44,
+    bloom: 0.82,
   },
   wire: {
     partials: [
-      [1, 1, 1.6],
-      [2, 0.31, 1.14],
-      [3, 0.18, 0.86],
-      [5, 0.095, 0.58],
-      [7, 0.052, 0.42],
-      [9, 0.028, 0.31],
-      [12, 0.013, 0.24],
+      [1, 1, 2.08],
+      [2, 0.34, 1.56],
+      [3, 0.21, 1.12],
+      [5, 0.11, 0.8],
+      [7, 0.058, 0.58],
+      [9, 0.032, 0.43],
+      [12, 0.015, 0.32],
     ],
     stretch: 0.00012,
     attack: 0.0015,
-    release: 0.5,
+    release: 0.84,
     hammer: 0.82,
     color: 1.22,
+    soundboard: 1.12,
+    bloom: 1.46,
   },
 });
 
@@ -135,7 +141,7 @@ class PianoVoice {
         now + decay * (0.78 + this.engine.body * 1.14) * (0.7 + 0.3 / harmonic),
       );
       oscillator.start(now);
-      oscillator.stop(now + 5.4);
+      oscillator.stop(now + 7.2);
       this.sources.push(oscillator);
       this.nodes.push(gain);
     });
@@ -170,23 +176,38 @@ class PianoVoice {
   }
 
   addSoundboard(frequency, now) {
-    const board = new OscillatorNode(this.context, {
-      type: "sine",
-      frequency: Math.max(48, frequency / 2),
-    });
     const boardFilter = new BiquadFilterNode(this.context, {
       type: "lowpass",
-      frequency: 620 + this.engine.body * 720,
-      Q: 0.5,
+      frequency: 720 + this.engine.body * 880,
+      Q: 0.62,
     });
-    const boardGain = new GainNode(this.context, { gain: 0.0001 });
-    board.connect(boardFilter).connect(boardGain).connect(this.colorFilter);
-    boardGain.gain.exponentialRampToValueAtTime(0.045 * this.engine.body * this.velocity, now + 0.012);
-    boardGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2 + this.engine.body * 1.6);
-    board.start(now);
-    board.stop(now + 4.2);
-    this.sources.push(board);
-    this.nodes.push(boardFilter, boardGain);
+    boardFilter.connect(this.colorFilter);
+    this.nodes.push(boardFilter);
+
+    const lowRatio = frequency >= 70 ? 0.5 : 1;
+    const resonances = [
+      [lowRatio, 0.052, 1.2],
+      [1, 0.036, 1],
+      [1.5, 0.018, 0.72],
+    ];
+    const bloom = this.profile.bloom * (1.5 + this.engine.body * 2.4);
+
+    resonances.forEach(([ratio, level, decay], index) => {
+      const board = new OscillatorNode(this.context, {
+        type: "sine",
+        frequency: Math.max(27.5, frequency * ratio),
+        detune: index === 0 ? -1.2 : index === 2 ? 1.4 : 0,
+      });
+      const boardGain = new GainNode(this.context, { gain: 0.0001 });
+      board.connect(boardGain).connect(boardFilter);
+      const peak = level * this.profile.soundboard * this.engine.body * this.velocity;
+      boardGain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peak), now + 0.018 + index * 0.006);
+      boardGain.gain.exponentialRampToValueAtTime(0.0001, now + bloom * decay);
+      board.start(now);
+      board.stop(now + bloom * decay + 0.2);
+      this.sources.push(board);
+      this.nodes.push(boardGain);
+    });
   }
 
   release(force = false) {
@@ -236,11 +257,11 @@ export class PianoEngine extends EventTarget {
     this.master = null;
     this.analyser = null;
     this.voices = new Map();
-    this.engineProfile = "ivory";
+    this.engineProfile = "wire";
     this.tuning = "equal";
     this.brightness = 0.68;
-    this.body = 0.62;
-    this.room = 0.16;
+    this.body = 0.78;
+    this.room = 0.2;
     this.sustain = false;
   }
 
@@ -267,13 +288,29 @@ export class PianoEngine extends EventTarget {
       frequency: 4200,
       gain: 1.4,
     });
+    const bodyShelf = new BiquadFilterNode(this.context, {
+      type: "lowshelf",
+      frequency: 190,
+      gain: 2.8,
+    });
+    const subsonicGuard = new BiquadFilterNode(this.context, {
+      type: "highpass",
+      frequency: 25,
+      Q: 0.7,
+    });
     const dry = new GainNode(this.context, { gain: 1 });
     const wet = new GainNode(this.context, { gain: this.room });
     const reverb = new ConvolverNode(this.context, { buffer: this.makeImpulse() });
 
     this.voiceBus.connect(dry).connect(compressor);
     this.voiceBus.connect(reverb).connect(wet).connect(compressor);
-    compressor.connect(warmth).connect(this.master).connect(this.analyser).connect(this.context.destination);
+    compressor
+      .connect(subsonicGuard)
+      .connect(bodyShelf)
+      .connect(warmth)
+      .connect(this.master)
+      .connect(this.analyser)
+      .connect(this.context.destination);
     this.roomGain = wet;
   }
 

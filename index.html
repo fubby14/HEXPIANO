@@ -11,7 +11,7 @@
     <title>HEXPIANO — Piano Genome Lab</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body data-engine="ivory">
+  <body data-engine="wire">
     <div class="ambient-grid" aria-hidden="true"></div>
     <header class="masthead">
       <a class="wordmark" href="./" aria-label="HEXPIANO home">
@@ -20,7 +20,7 @@
       </a>
       <div class="lab-label">
         <span class="status-light" aria-hidden="true"></span>
-        <span id="status-message">Sound laboratory ready</span>
+        <span id="status-message">Wire laboratory ready</span>
       </div>
       <a class="legacy-link" href="./cloudstepper.html">Legacy Cloudstepper ↗</a>
     </header>
@@ -42,23 +42,23 @@
           <span class="engine-number">01</span>
           <span class="engine-copy">
             <strong>Crystal</strong>
-            <small>Clear modal strings · long glass tail</small>
+            <small>Clear strings · expanded soundboard · glass tail</small>
           </span>
           <kbd>1</kbd>
         </button>
-        <button class="engine-card selected" type="button" data-engine="ivory" aria-pressed="true">
+        <button class="engine-card" type="button" data-engine="ivory" aria-pressed="false">
           <span class="engine-number">02</span>
           <span class="engine-copy">
             <strong>Ivory</strong>
-            <small>Soft body · defined hammer · closest to home</small>
+            <small>Reference voice · soft body · defined hammer</small>
           </span>
           <kbd>2</kbd>
         </button>
-        <button class="engine-card" type="button" data-engine="wire" aria-pressed="false">
+        <button class="engine-card selected" type="button" data-engine="wire" aria-pressed="true">
           <span class="engine-number">03</span>
           <span class="engine-copy">
             <strong>Wire</strong>
-            <small>Hard strike · stretched metal harmonics</small>
+            <small>Grand strike · stretched wire · long soundboard bloom</small>
           </span>
           <kbd>3</kbd>
         </button>
@@ -75,6 +75,26 @@
           <div class="voice-meter">
             <span id="voice-readout">00</span>
             <small>voices</small>
+          </div>
+        </div>
+
+        <div class="octave-rail">
+          <div class="octave-identity">
+            <span>Octave window</span>
+            <output id="octave-readout" for="octave-slider">C4 — C5</output>
+          </div>
+          <div class="octave-slider-wrap">
+            <span>C1</span>
+            <input
+              id="octave-slider"
+              type="range"
+              min="1"
+              max="6"
+              step="1"
+              value="4"
+              aria-label="Keyboard octave window"
+            />
+            <span>C6</span>
           </div>
         </div>
 
@@ -126,12 +146,12 @@
               <input id="brightness" type="range" min="0.1" max="1" step="0.01" value="0.68" />
             </label>
             <label class="range-control" for="body">
-              <span><strong>Body</strong><output data-output="body">62%</output></span>
-              <input id="body" type="range" min="0.1" max="1" step="0.01" value="0.62" />
+              <span><strong>Grandness</strong><output data-output="body">78%</output></span>
+              <input id="body" type="range" min="0.1" max="1" step="0.01" value="0.78" />
             </label>
             <label class="range-control" for="room">
-              <span><strong>Room</strong><output data-output="room">16%</output></span>
-              <input id="room" type="range" min="0" max="0.55" step="0.01" value="0.16" />
+              <span><strong>Room</strong><output data-output="room">20%</output></span>
+              <input id="room" type="range" min="0" max="0.55" step="0.01" value="0.2" />
             </label>
             <label class="range-control" for="velocity">
               <span><strong>Touch</strong><output data-output="velocity">102</output></span>
@@ -145,7 +165,7 @@
         <span class="hex-outline" aria-hidden="true">⬡</span>
         <p>
           <strong>Listening prompt</strong>
-          Which voice keeps its identity when you play softly, strike hard, and let a chord decay?
+          Does Wire keep its identity from the low octave through the high one—and does Crystal still challenge it?
         </p>
       </aside>
     </main>

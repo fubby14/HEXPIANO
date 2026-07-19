@@ -1,5 +1,5 @@
 import { PianoEngine } from "./engine.js";
-import { TUNINGS, centsFromEqual, describePitch, noteName } from "./tuning.js";
+import { OCTAVE_RANGE, TUNINGS, centsFromEqual, describePitch, noteName, octaveStartMidi } from "./tuning.js";
 
 const engine = new PianoEngine();
 const keyboard = document.querySelector("#keyboard");
@@ -12,6 +12,8 @@ const centsReadout = document.querySelector("#cents-readout");
 const voiceReadout = document.querySelector("#voice-readout");
 const sustainButton = document.querySelector("#sustain-button");
 const midiButton = document.querySelector("#midi-button");
+const octaveSlider = document.querySelector("#octave-slider");
+const octaveReadout = document.querySelector("#octave-readout");
 const statusMessage = document.querySelector("#status-message");
 const canvas = document.querySelector("#scope");
 const canvasContext = canvas.getContext("2d");
@@ -22,10 +24,12 @@ const heldInputs = new Map();
 const activeCounts = new Map();
 let midiAccess = null;
 let scopeFrame = null;
+let baseMidi = octaveStartMidi(octaveSlider.value);
 
 function buildKeyboard() {
+  keyboard.replaceChildren();
   for (let offset = 0; offset <= 12; offset += 1) {
-    const midi = 60 + offset;
+    const midi = baseMidi + offset;
     const key = document.createElement("button");
     const keyBinding = keyBindings[offset];
     const isBlack = blackPitchClasses.has(midi % 12);
@@ -43,6 +47,25 @@ function buildKeyboard() {
     key.addEventListener("pointercancel", (event) => endInput(`pointer-${event.pointerId}`));
     keyboard.append(key);
   }
+  keyboard.setAttribute("aria-label", `${noteName(baseMidi)} to ${noteName(baseMidi + 12)} piano keyboard`);
+}
+
+function stopPerformance() {
+  heldInputs.clear();
+  activeCounts.clear();
+  document.querySelectorAll(".piano-key.active").forEach((key) => key.classList.remove("active"));
+  engine.allNotesOff();
+}
+
+function setOctave(octave) {
+  stopPerformance();
+  baseMidi = octaveStartMidi(octave);
+  const selectedOctave = Math.floor(baseMidi / 12) - 1;
+  octaveSlider.value = String(selectedOctave);
+  octaveReadout.textContent = `${noteName(baseMidi)} — ${noteName(baseMidi + 12)}`;
+  buildKeyboard();
+  showPitch(baseMidi);
+  statusMessage.textContent = `Octave window ${selectedOctave}`;
 }
 
 async function beginInput(token, midi, velocity) {
@@ -106,7 +129,7 @@ function chooseTuning(tuningId) {
     button.setAttribute("aria-pressed", String(selected));
   });
   tuningDescription.textContent = TUNINGS[tuningId].description;
-  const displayedMidi = Number(noteReadout.dataset.midi || 60);
+  const displayedMidi = Number(noteReadout.dataset.midi || baseMidi);
   showPitch(displayedMidi);
 }
 
@@ -168,7 +191,7 @@ function wait(milliseconds) {
 async function playPhrase() {
   const button = document.querySelector("#phrase-button");
   button.disabled = true;
-  const phrase = [60, 64, 67, 72, 67, 64, 62, 65, 69, 72];
+  const phrase = [0, 4, 7, 12, 7, 4, 2, 5, 9, 12].map((offset) => baseMidi + offset);
   for (let index = 0; index < phrase.length; index += 1) {
     const midi = phrase[index];
     const token = `phrase-${index}`;
@@ -222,12 +245,8 @@ tuningButtons.forEach((button) => button.addEventListener("click", () => chooseT
 sustainButton.addEventListener("click", () => setSustain(!engine.sustain));
 midiButton.addEventListener("click", connectMidi);
 document.querySelector("#phrase-button").addEventListener("click", playPhrase);
-document.querySelector("#panic-button").addEventListener("click", () => {
-  heldInputs.clear();
-  activeCounts.clear();
-  document.querySelectorAll(".piano-key.active").forEach((key) => key.classList.remove("active"));
-  engine.allNotesOff();
-});
+document.querySelector("#panic-button").addEventListener("click", stopPerformance);
+octaveSlider.addEventListener("input", () => setOctave(octaveSlider.value));
 
 updateParameter(document.querySelector("#brightness"), (value) => `${Math.round(value * 100)}%`, (value) => {
   engine.brightness = value;
@@ -256,7 +275,7 @@ window.addEventListener("keydown", (event) => {
     return;
   }
   const offset = keyBindings.indexOf(event.key.toLowerCase());
-  if (offset >= 0) beginInput(`keyboard-${event.code}`, 60 + offset, currentVelocity());
+  if (offset >= 0) beginInput(`keyboard-${event.code}`, baseMidi + offset, currentVelocity());
 });
 
 window.addEventListener("keyup", (event) => {
@@ -274,8 +293,10 @@ window.addEventListener("blur", () => {
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("beforeunload", () => window.cancelAnimationFrame(scopeFrame));
 
-buildKeyboard();
-chooseEngine("ivory");
+octaveSlider.min = String(OCTAVE_RANGE.min);
+octaveSlider.max = String(OCTAVE_RANGE.max);
+setOctave(OCTAVE_RANGE.initial);
+chooseEngine("wire");
 chooseTuning("equal");
 resizeCanvas();
 drawScope();
@@ -285,6 +306,7 @@ window.HEXPIANO = {
   engine,
   chooseEngine,
   chooseTuning,
+  setOctave,
   tuningFrequency: (midi) => describePitch(midi, engine.tuning).frequency,
   centsFromEqual: (midi) => centsFromEqual(midi, engine.tuning),
 };

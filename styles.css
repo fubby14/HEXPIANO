@@ -341,6 +341,53 @@ kbd {
   text-transform: uppercase;
 }
 
+.octave-rail {
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 210px minmax(280px, 1fr);
+  gap: 34px;
+  align-items: center;
+  padding: 13px 28px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.18), var(--voice-soft), rgba(0, 0, 0, 0.08));
+  border-bottom: 1px solid var(--line);
+}
+
+.octave-identity {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.octave-identity span {
+  color: var(--muted);
+}
+
+.octave-identity output {
+  color: var(--voice-color);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.octave-slider-wrap {
+  display: grid;
+  grid-template-columns: auto minmax(180px, 1fr) auto;
+  gap: 15px;
+  align-items: center;
+}
+
+.octave-slider-wrap span {
+  color: var(--dim);
+  font-size: 8px;
+}
+
+#octave-slider {
+  width: 100%;
+}
+
 .keyboard {
   position: relative;
   height: clamp(220px, 29vw, 390px);
@@ -713,6 +760,10 @@ footer {
     grid-template-columns: 190px 1fr 60px;
   }
 
+  .octave-rail {
+    grid-template-columns: 160px 1fr;
+  }
+
   .keyboard {
     padding-inline: 12px;
   }
@@ -773,6 +824,12 @@ footer {
     height: 80px;
     grid-template-columns: 1fr 45px;
     padding-inline: 16px;
+  }
+
+  .octave-rail {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px 16px;
   }
 
   #scope {

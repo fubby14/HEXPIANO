@@ -8,9 +8,9 @@ The current front door is the **Piano Genome Lab**, a deliberately narrow listen
 
 ### Voices
 
-- **Crystal** — clear modal strings with a long, glassy tail
+- **Crystal** — clear modal strings with an expanded soundboard and glassy tail
 - **Ivory** — rounded body, defined hammer, and the most familiar piano balance
-- **Wire** — hard transient and stretched metallic harmonics
+- **Wire** — the default candidate, with a grand strike, stretched metallic harmonics, and long soundboard bloom
 
 All three voices are generated in real time with the native Web Audio API. No piano samples are included yet.
 
@@ -22,8 +22,9 @@ All three voices are generated in real time with the native Web Audio API. No pi
 
 ### Playing
 
-- Click or touch the C4–C5 keyboard
+- Click or touch the displayed one-octave keyboard
 - Use computer keys `A W S E D F T G Y H U J K`
+- Slide the octave rail from C1–C2 through C6–C7
 - Hold `Space` for sustain
 - Use `1`, `2`, and `3` to switch sound engines
 - Connect a Web MIDI keyboard for note velocity and sustain pedal input
@@ -67,4 +68,4 @@ HEXPIANO.js         Preserved original HEXPIANO engine
 
 ## Next sound milestone
 
-Choose the strongest genome through listening, then deepen only that voice with sympathetic resonance, half-pedaling, release behavior, wider range, and optional sampled hammer transients.
+Wire is the current lead. Compare its low-to-high octave identity against Crystal, then deepen the winner with sympathetic resonance, half-pedaling, release behavior, a full keyboard, and optional sampled hammer transients.
