@@ -60,6 +60,14 @@ npm run verify
 
 This checks JavaScript syntax plus the deterministic motion, rhythm, concert-voicing, octave, and tuning contracts with Node's built-in test runner.
 
+## Package a single-file edition
+
+```bash
+npm run package:otad
+```
+
+This writes `dist/hexpiano-otad.html`: a self-contained release page with the styles and JavaScript inlined, the external font import removed, and an embed-aware view that opens directly on the instrument inside an iframe. Pass an output path directly to `node scripts/package-otad.mjs` to place the artifact in another static-site project.
+
 ## Structure
 
 ```text
