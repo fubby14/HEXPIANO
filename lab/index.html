@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#15120e" />
+    <meta
+      name="description"
+      content="HEXPIANO Piano Genome Lab — three piano engines, three tunings, one octave to make beautiful."
+    />
+    <title>HEXPIANO — Piano Genome Lab</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body data-engine="crystal">
+    <div class="ambient-grid" aria-hidden="true"></div>
+    <header class="masthead">
+      <a class="wordmark" href="../" aria-label="HEXPIANO home">
+        <span class="hex-mark" aria-hidden="true">⬡</span>
+        <span>HEXPIANO</span>
+      </a>
+      <div class="lab-label">
+        <span class="status-light" aria-hidden="true"></span>
+        <span id="status-message">Crystal Concert ready</span>
+      </div>
+      <a class="legacy-link" href="../cloudstepper.html">Legacy Cloudstepper ↗</a>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="lab-title">
+        <div>
+          <p class="eyebrow">Piano Genome Lab · Milestone 02 · Concert voicing</p>
+          <h1 id="lab-title">Find the sound<br />before the instrument.</h1>
+        </div>
+        <p class="hero-copy">
+          Crystal now behaves like a concert instrument: layered strings, a physical strike,
+          a breathing soundboard, and a hall that arrives after the note speaks.
+        </p>
+      </section>
+
+      <section class="engine-selector" aria-label="Sound engine selection">
+        <button class="engine-card selected" type="button" data-engine="crystal" aria-pressed="true">
+          <span class="engine-number">01</span>
+          <span class="engine-copy">
+            <strong>Crystal Concert</strong>
+            <small>Triple strings · defined hammer · concert-hall bloom</small>
+          </span>
+          <kbd>1</kbd>
+        </button>
+        <button class="engine-card" type="button" data-engine="ivory" aria-pressed="false">
+          <span class="engine-number">02</span>
+          <span class="engine-copy">
+            <strong>Ivory</strong>
+            <small>Reference voice · soft body · defined hammer</small>
+          </span>
+          <kbd>2</kbd>
+        </button>
+        <button class="engine-card" type="button" data-engine="wire" aria-pressed="false">
+          <span class="engine-number">03</span>
+          <span class="engine-copy">
+            <strong>Wire</strong>
+            <small>Grand strike · stretched wire · long soundboard bloom</small>
+          </span>
+          <kbd>3</kbd>
+        </button>
+      </section>
+
+      <section class="instrument" aria-label="Playable piano">
+        <div class="instrument-topline">
+          <div class="pitch-display" aria-live="polite">
+            <span id="note-readout" data-midi="60">C4</span>
+            <span id="frequency-readout">261.63 Hz</span>
+            <span id="cents-readout">+0.0 cents</span>
+          </div>
+          <canvas id="scope" aria-label="Audio waveform"></canvas>
+          <div class="voice-meter">
+            <span id="voice-readout">00</span>
+            <small>voices</small>
+          </div>
+        </div>
+
+        <div class="octave-rail">
+          <div class="octave-identity">
+            <span>Octave window</span>
+            <output id="octave-readout" for="octave-slider">C4 — C5</output>
+          </div>
+          <div class="octave-slider-wrap">
+            <span>C1</span>
+            <input
+              id="octave-slider"
+              type="range"
+              min="1"
+              max="6"
+              step="1"
+              value="4"
+              aria-label="Keyboard octave window"
+            />
+            <span>C6</span>
+          </div>
+        </div>
+
+        <div id="keyboard" class="keyboard" aria-label="C4 to C5 piano keyboard"></div>
+
+        <div class="performance-strip">
+          <button id="sustain-button" class="performance-button" type="button" aria-pressed="false">
+            <span class="pedal-icon" aria-hidden="true"></span>
+            <span><strong>Sustain</strong><small>Hold space</small></span>
+          </button>
+          <button id="phrase-button" class="performance-button" type="button">
+            <span class="play-icon" aria-hidden="true">▶</span>
+            <span><strong>Hear test phrase</strong><small>Same phrase, every engine</small></span>
+          </button>
+          <button id="midi-button" class="performance-button" type="button">
+            <span class="midi-icon" aria-hidden="true">◌</span>
+            <span><strong>Connect MIDI</strong><small>Velocity + pedal</small></span>
+          </button>
+          <button id="panic-button" class="panic-button" type="button">All notes off</button>
+        </div>
+      </section>
+
+      <section class="laboratory" aria-label="Sound controls">
+        <div class="tuning-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Temperament</p>
+              <h2>Place the notes</h2>
+            </div>
+            <p id="tuning-description">Modern concert tuning. Every semitone is evenly spaced.</p>
+          </div>
+          <div class="segmented-control" role="group" aria-label="Tuning system">
+            <button type="button" data-tuning="equal" class="selected" aria-pressed="true">Equal</button>
+            <button type="button" data-tuning="just" aria-pressed="false">Just C</button>
+            <button type="button" data-tuning="pythagorean" aria-pressed="false">Pythagorean</button>
+          </div>
+        </div>
+
+        <div class="tone-panel">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Voice controls</p>
+              <h2>Shape the concert body</h2>
+            </div>
+          </div>
+          <div class="knob-grid">
+            <label class="range-control" for="brightness">
+              <span><strong>Brightness</strong><output data-output="brightness">76%</output></span>
+              <input id="brightness" type="range" min="0.1" max="1" step="0.01" value="0.76" />
+            </label>
+            <label class="range-control" for="body">
+              <span><strong>Grandness</strong><output data-output="body">86%</output></span>
+              <input id="body" type="range" min="0.1" max="1" step="0.01" value="0.86" />
+            </label>
+            <label class="range-control" for="room">
+              <span><strong>Room</strong><output data-output="room">22%</output></span>
+              <input id="room" type="range" min="0" max="0.55" step="0.01" value="0.22" />
+            </label>
+            <label class="range-control" for="velocity">
+              <span><strong>Touch</strong><output data-output="velocity">107</output></span>
+              <input id="velocity" type="range" min="0.15" max="1" step="0.01" value="0.84" />
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <aside class="listening-note">
+        <span class="hex-outline" aria-hidden="true">⬡</span>
+        <p>
+          <strong>Listening prompt</strong>
+          Play a low octave, a wide chord, then a bright upper-register run. The strike should stay crisp while the instrument grows behind it.
+        </p>
+      </aside>
+    </main>
+
+    <footer>
+      <span>HEXPIANO / Crystal Concert</span>
+      <span>Native Web Audio · Procedural concert voicing</span>
+    </footer>
+
+    <script type="module" src="../src/app.js"></script>
+  </body>
+</html>

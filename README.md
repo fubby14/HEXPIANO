@@ -1,33 +1,44 @@
 # HEXPIANO
 
-HEXPIANO is a sound-first browser instrument: one piano identity that can be played through different interfaces and tuned through different temperaments.
+HEXPIANO is a sound-first browser instrument: the Crystal Concert procedural piano played through interfaces that make harmony feel spatial, tactile, and strange.
 
-The current front door is the **Piano Genome Lab**, a deliberately narrow listening prototype. It presents one octave, three procedural piano engines, and three tuning systems behind identical controls so the core sound can be chosen before the larger instrument is designed.
+The release-facing instrument is **Constellation**, a harmonic hex field and performance arpeggiator. The sound-development interface remains available at [`/lab/`](./lab/).
 
-## Piano Genome Lab
+## Constellation
 
-### Voices
+Notes are arranged by musical relationship rather than keyboard order:
 
-- **Crystal Concert** — the default candidate, with register-scaled unison strings, velocity-shaped hammer bands, duplex resonance, long bass decay, and a delayed concert-hall bloom
-- **Ivory** — rounded body, defined hammer, and the most familiar piano balance
-- **Wire** — the stronger alternate, with a grand strike, stretched metallic harmonics, and long soundboard bloom
+- move horizontally through perfect fifths
+- move diagonally through major thirds
+- drag across stars to draw a harmony and establish its path
+- tap any star to audition it through Crystal Concert
 
-All three voices are generated in real time with the native Web Audio API. Crystal Concert remains fully procedural: no piano samples are included yet.
+The opening constellation is playable immediately: press **Begin orbit** or hit `Space` while focus is outside a control.
+
+### Motion modes
+
+- **Orbit** follows the drawing in its original direction
+- **Bounce** travels forward and returns through the interior
+- **Spill** rises from the lowest selected pitch to the highest
+- **Pendulum** alternates outer notes and folds toward the middle
+- **Dust** creates a deterministic new scatter on every cycle
+
+Tempo, note division, gate, swing, octave range, resonance, and temperament remain live while the instrument plays. Audio notes use a Web Audio lookahead scheduler so timing is anchored to the audio clock rather than browser animation frames.
+
+## Crystal Concert
+
+Crystal Concert is generated in real time with the native Web Audio API. It combines register-scaled unison strings, velocity-shaped hammer bands, duplex resonance, long bass decay, soundboard coupling, and a delayed filtered concert-hall bloom. No piano samples or external audio files are included.
+
+The Piano Genome Lab also retains two comparison voices:
+
+- **Ivory** — rounded body and a familiar reference balance
+- **Wire** — a grander strike, stretched metallic harmonics, and long bloom
 
 ### Tunings
 
 - 12-tone equal temperament
 - Just intonation centered on C
 - Pythagorean tuning centered on C
-
-### Playing
-
-- Click or touch the displayed one-octave keyboard
-- Use computer keys `A W S E D F T G Y H U J K`
-- Slide the octave rail from C1–C2 through C6–C7
-- Hold `Space` for sustain
-- Use `1`, `2`, and `3` to switch sound engines
-- Connect a Web MIDI keyboard for note velocity and sustain pedal input
 
 ## Run locally
 
@@ -47,26 +58,26 @@ No dependency installation is required.
 npm run verify
 ```
 
-This checks the JavaScript syntax and the frequency/tuning contracts with Node's built-in test runner.
+This checks JavaScript syntax plus the deterministic motion, rhythm, concert-voicing, octave, and tuning contracts with Node's built-in test runner.
 
 ## Structure
 
 ```text
-index.html          Piano Genome Lab interface
-styles.css          Instrument-panel presentation
-src/engine.js       Web Audio voice generation and master signal path
-src/concert-voicing.js  Register, string, strike, and hammer behavior
-src/tuning.js       Temperament math and pitch descriptions
-src/app.js          Keyboard, MIDI, controls, and visual feedback
-test/               Tuning contract tests
-cloudstepper.html   Preserved original HEXPIANO interface
-HEXPIANO.js         Preserved original HEXPIANO engine
+index.html                 Constellation release instrument
+release.css                Constellation visual system
+lab/index.html             Piano Genome Lab
+styles.css                 Genome Lab presentation
+src/constellation-app.js   Harmonic field, gestures, transport, audio scheduler
+src/arp-patterns.js        Pure deterministic motion and rhythm logic
+src/engine.js              Crystal Concert Web Audio voice and signal path
+src/concert-voicing.js     Register, string, strike, and hammer behavior
+src/tuning.js              Temperament math and pitch descriptions
+src/app.js                 Genome Lab keyboard, MIDI, and controls
+test/                      Motion, timing, voicing, octave, and tuning contracts
+cloudstepper.html          Preserved original HEXPIANO interface
+HEXPIANO.js                Preserved original HEXPIANO engine
 ```
 
 ## Legacy instrument
 
 `cloudstepper.html` and `HEXPIANO.js` remain untouched as the original instrument. The repository tag `legacy-v0` points to the exact pre-lab state.
-
-## Next sound milestone
-
-Crystal is the current lead after the first low-to-high listening pass. The concert pass adds multi-string scaling, register-dependent decay, duplex bloom, dual-band hammer attack, damper noise, soundboard coupling, and a pre-delayed hall. The next decision should come from listening before adding half-pedaling, a full keyboard, or optional sampled hammer transients.

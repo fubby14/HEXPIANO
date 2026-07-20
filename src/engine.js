@@ -91,7 +91,7 @@ function exponentialFade(param, now, peak, duration) {
 }
 
 class PianoVoice {
-  constructor(engine, midi, velocity, profileName) {
+  constructor(engine, midi, velocity, profileName, startAt = null) {
     this.engine = engine;
     this.context = engine.context;
     this.midi = midi;
@@ -103,7 +103,7 @@ class PianoVoice {
     this.released = false;
     this.sustained = false;
 
-    const now = this.context.currentTime;
+    const now = Math.max(this.context.currentTime, startAt ?? this.context.currentTime);
     const frequency = tuningFrequency(midi, engine.tuning);
     const brightness = engine.brightness;
     const body = engine.body;
@@ -294,20 +294,24 @@ class PianoVoice {
     this.nodes.push(filter, gain);
   }
 
-  release(force = false) {
-    if (this.released) return;
+  release(force = false, releaseAt = null) {
+    if (this.released) {
+      if (force) this.dispose();
+      return;
+    }
     if (this.engine.sustain && !force) {
       this.sustained = true;
       return;
     }
 
     this.released = true;
-    const now = this.context.currentTime;
+    const now = Math.max(this.context.currentTime, releaseAt ?? this.context.currentTime);
     const release = force ? 0.08 : this.profile.release * (0.54 + this.engine.body * 0.72);
     if (!force) this.addDamperNoise(now);
     exponentialFade(this.output.gain, now, 0.0001, release);
 
-    window.setTimeout(() => this.dispose(), (release + 0.12) * 1000);
+    const waitForScheduledRelease = Math.max(0, now - this.context.currentTime);
+    window.setTimeout(() => this.dispose(), (waitForScheduledRelease + release + 0.12) * 1000);
   }
 
   dispose() {
@@ -451,21 +455,26 @@ export class PianoEngine extends EventTarget {
     return buffer;
   }
 
-  async noteOn(midi, velocity = 0.82) {
+  async noteOn(midi, velocity = 0.82, startAt = null) {
     await this.ensureReady();
     this.enforceVoiceLimit();
-    const voice = new PianoVoice(this, midi, Math.max(0.08, Math.min(1, velocity)), this.engineProfile);
+    const voice = new PianoVoice(
+      this,
+      midi,
+      Math.max(0.08, Math.min(1, velocity)),
+      this.engineProfile,
+      startAt,
+    );
     if (!this.voices.has(midi)) this.voices.set(midi, new Set());
     this.voices.get(midi).add(voice);
     this.emitState();
     return voice;
   }
 
-  noteOff(midi) {
+  noteOff(midi, releaseAt = null) {
     const voices = this.voices.get(midi);
     if (!voices) return;
-    voices.forEach((voice) => voice.release());
-    if (!this.sustain) this.voices.delete(midi);
+    voices.forEach((voice) => voice.release(false, releaseAt));
     this.emitState();
   }
 
