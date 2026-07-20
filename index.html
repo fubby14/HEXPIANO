@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f8f5" />
+    <meta
+      name="description"
+      content="HEXPIANO Constellation — draw a harmony, choose its motion, and play the Crystal Concert piano engine."
+    />
+    <title>HEXPIANO — Constellation</title>
+    <link rel="stylesheet" href="./release.css" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true">
+      <div class="orb orb-one"></div>
+      <div class="orb orb-two"></div>
+      <div class="grain"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="HEXPIANO home">
+        <span class="brand-glyph" aria-hidden="true">●</span>
+        <span>HEXPIANO</span>
+      </a>
+      <div class="voice-badge">
+        <span class="voice-light" aria-hidden="true"></span>
+        Crystal Concert
+      </div>
+      <nav aria-label="Project views">
+        <a href="./lab/">Genome Lab</a>
+        <a href="./cloudstepper.html">Legacy</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="kicker">Constellation instrument · 01</p>
+        <h1 id="page-title">Draw a chord.<br /><em>Let it orbit.</em></h1>
+        <p class="intro-copy">
+          Notes live by harmonic relationship, not keyboard order. Drag through the field,
+          choose a motion, and let Crystal find the path.
+        </p>
+      </section>
+
+      <section class="instrument-shell" aria-label="Constellation arpeggiator">
+        <div class="stage-topline">
+          <div class="sequence-readout">
+            <span class="micro-label">Sequence</span>
+            <strong id="sequence-names">C4 · E4 · G4 · D5</strong>
+          </div>
+          <div class="transport-state" aria-live="polite">
+            <span id="pulse-dot" aria-hidden="true"></span>
+            <span id="status-message">Drag the stars or press play</span>
+          </div>
+          <div class="voice-count">
+            <strong id="voice-count">00</strong>
+            <span>voices</span>
+          </div>
+        </div>
+
+        <div class="constellation-wrap">
+          <div id="hex-field" class="hex-field" aria-label="Harmonic note field">
+            <svg class="constellation-lines" viewBox="0 0 720 560" aria-hidden="true">
+              <polyline id="constellation-shadow" points=""></polyline>
+              <polyline id="constellation-path" points=""></polyline>
+            </svg>
+          </div>
+          <div class="axis-note axis-fifths" aria-hidden="true">← fifths →</div>
+          <div class="axis-note axis-thirds" aria-hidden="true">thirds ↗</div>
+        </div>
+
+        <div class="transport">
+          <button id="play-button" class="play-button" type="button">
+            <span class="play-symbol" aria-hidden="true">▶</span>
+            <span class="stop-symbol" aria-hidden="true">■</span>
+            <strong>Begin orbit</strong>
+          </button>
+          <button id="clear-button" class="clear-button" type="button">Clear drawing</button>
+          <p class="gesture-hint">Drag across notes to redraw · tap any star to hear it</p>
+        </div>
+      </section>
+
+      <section class="control-deck" aria-label="Arpeggiator controls">
+        <div class="motion-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="micro-label">Motion</span>
+              <h2>How the line travels</h2>
+            </div>
+            <span id="motion-description">Follow the drawing in its original direction.</span>
+          </div>
+          <div class="motion-grid" role="group" aria-label="Motion pattern">
+            <button type="button" class="motion-card selected" data-motion="orbit" aria-pressed="true">
+              <span>01</span><strong>Orbit</strong><small>Follow the path</small>
+            </button>
+            <button type="button" class="motion-card" data-motion="bounce" aria-pressed="false">
+              <span>02</span><strong>Bounce</strong><small>Return through it</small>
+            </button>
+            <button type="button" class="motion-card" data-motion="spill" aria-pressed="false">
+              <span>03</span><strong>Spill</strong><small>Low into high</small>
+            </button>
+            <button type="button" class="motion-card" data-motion="pendulum" aria-pressed="false">
+              <span>04</span><strong>Pendulum</strong><small>Edges fold inward</small>
+            </button>
+            <button type="button" class="motion-card" data-motion="dust" aria-pressed="false">
+              <span>05</span><strong>Dust</strong><small>A new scatter each round</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="rhythm-panel">
+          <div class="panel-heading compact">
+            <div>
+              <span class="micro-label">Pulse</span>
+              <h2>Shape the movement</h2>
+            </div>
+          </div>
+          <div class="control-grid">
+            <label class="range-control" for="tempo">
+              <span><strong>Tempo</strong><output id="tempo-output" for="tempo">108 BPM</output></span>
+              <input id="tempo" type="range" min="48" max="184" step="1" value="108" />
+            </label>
+            <label class="select-control" for="rate">
+              <span><strong>Rate</strong><small>Note division</small></span>
+              <select id="rate">
+                <option value="1">1 / 4</option>
+                <option value="0.5" selected>1 / 8</option>
+                <option value="0.25">1 / 16</option>
+              </select>
+            </label>
+            <label class="range-control" for="gate">
+              <span><strong>Gate</strong><output id="gate-output" for="gate">72%</output></span>
+              <input id="gate" type="range" min="0.18" max="1.15" step="0.01" value="0.72" />
+            </label>
+            <label class="range-control" for="swing">
+              <span><strong>Swing</strong><output id="swing-output" for="swing">12%</output></span>
+              <input id="swing" type="range" min="0" max="0.7" step="0.01" value="0.12" />
+            </label>
+            <label class="range-control" for="octaves">
+              <span><strong>Octave range</strong><output id="octaves-output" for="octaves">2</output></span>
+              <input id="octaves" type="range" min="1" max="4" step="1" value="2" />
+            </label>
+            <label class="range-control" for="resonance">
+              <span><strong>Resonance</strong><output id="resonance-output" for="resonance">68%</output></span>
+              <input id="resonance" type="range" min="0.15" max="1" step="0.01" value="0.68" />
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="tuning-strip" aria-label="Tuning controls">
+        <div>
+          <span class="micro-label">Temperament</span>
+          <p id="tuning-description">Modern concert tuning. Every semitone is evenly spaced.</p>
+        </div>
+        <div class="tuning-buttons" role="group" aria-label="Tuning system">
+          <button type="button" class="selected" data-tuning="equal" aria-pressed="true">Equal</button>
+          <button type="button" data-tuning="just" aria-pressed="false">Just C</button>
+          <button type="button" data-tuning="pythagorean" aria-pressed="false">Pythagorean</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>HEXPIANO / Constellation</span>
+      <span>Fifths across · thirds rising · Crystal underneath</span>
+    </footer>
+
+    <script type="module" src="./src/constellation-app.js"></script>
+  </body>
+</html>

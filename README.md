@@ -1,179 +1,91 @@
-# HEXPIANO.js - Function Interface Documentation
+# HEXPIANO
 
-**HEXPIANO.js** https://arweave.net/ykZCJW3NS06m7aw1HGfylsg-pICz6X95H4Fw8KaZ7e8 is the core JavaScript audio engine that powers the HEXPIANO step sequencer. This documentation provides a complete reference for all function interfaces, input/output specifications, and parameter mappings used in the audio synthesis system.
+HEXPIANO is a sound-first browser instrument: the Crystal Concert procedural piano played through interfaces that make harmony feel spatial, tactile, and strange.
 
-The engine implements real-time audio synthesis using Web Audio API, featuring polyphonic voice management, glitch effects processing, MIDI integration, and note conversion utilities. All functions are designed with clear input/output contracts to enable easy integration and extension.
+The release-facing instrument is **Constellation**, a harmonic hex field and performance arpeggiator. The sound-development interface remains available at [`/lab/`](./lab/).
 
-This reference is intended for developers who want to understand the audio engine architecture, modify existing functionality, or integrate HEXPIANO components into other projects.
+## Constellation
 
-## Core Audio Functions
+Notes are arranged by musical relationship rather than keyboard order:
 
-### `createVoice(midi, velocity, when)`
-**Inputs:**
-- `midi` (number): MIDI note number (0-127)
-- `velocity` (number): Note velocity (0-1)
-- `when` (number): Audio time to start note
+- move horizontally through perfect fifths
+- move diagonally through major thirds
+- drag across stars to draw a harmony and establish its path
+- tap any star to audition it through Crystal Concert
 
-**Returns:** Object containing audio nodes for the voice
-```javascript
-{
-  osc: OscillatorNode,
-  gain: GainNode,
-  panner: StereoPannerNode,
-  startTime: number
-}
+The opening constellation is playable immediately: press **Begin orbit** or hit `Space` while focus is outside a control.
+
+### Motion modes
+
+- **Orbit** follows the drawing in its original direction
+- **Bounce** travels forward and returns through the interior
+- **Spill** rises from the lowest selected pitch to the highest
+- **Pendulum** alternates outer notes and folds toward the middle
+- **Dust** creates a deterministic new scatter on every cycle
+
+Tempo, note division, gate, swing, octave range, resonance, and temperament remain live while the instrument plays. Audio notes use a Web Audio lookahead scheduler so timing is anchored to the audio clock rather than browser animation frames.
+
+## Crystal Concert
+
+Crystal Concert is generated in real time with the native Web Audio API. It combines register-scaled unison strings, velocity-shaped hammer bands, duplex resonance, long bass decay, soundboard coupling, and a delayed filtered concert-hall bloom. No piano samples or external audio files are included.
+
+The Piano Genome Lab also retains two comparison voices:
+
+- **Ivory** — rounded body and a familiar reference balance
+- **Wire** — a grander strike, stretched metallic harmonics, and long bloom
+
+### Tunings
+
+- 12-tone equal temperament
+- Just intonation centered on C
+- Pythagorean tuning centered on C
+
+## Run locally
+
+The app uses browser modules, so serve the directory rather than opening `index.html` directly:
+
+```bash
+npm run serve
 ```
 
-### `enforceVoiceLimit()`
-**Inputs:** None
-**Returns:** void
-**Side Effects:** Removes finished voices from active voices array
+Then open [http://localhost:4177](http://localhost:4177).
 
-### `dispose()`
-**Inputs:** None
-**Returns:** void
-**Side Effects:** Disconnects all audio nodes and cleans up resources
+No dependency installation is required.
 
-## Glitch Effects Functions
+## Verify
 
-### `createCrusher(bits, downsample)`
-**Inputs:**
-- `bits` (number): Bit depth (1-16)
-- `downsample` (number): Downsample factor (1-16)
-
-**Returns:** ScriptProcessorNode configured for bitcrushing
-
-### `updateCrusher()`
-**Inputs:** None (reads from DOM controls)
-**Returns:** void
-**Side Effects:** Replaces current bitcrusher with new parameters
-
-## Note Conversion Functions
-
-### `noteNameToMidi(note)`
-**Inputs:**
-- `note` (string): Note name (e.g., "C4", "D#4", "F#5")
-
-**Returns:** number - MIDI note number (0-127)
-**Throws:** Error for invalid note format
-
-**Examples:**
-```javascript
-noteNameToMidi("C4") // returns 60
-noteNameToMidi("D#4") // returns 63
-noteNameToMidi("F#5") // returns 78
+```bash
+npm run verify
 ```
 
-### `computeRowMidis()`
-**Inputs:** None (uses global `rowMidis` array)
-**Returns:** void
-**Side Effects:** Updates `rowMidis` array with current octave
+This checks JavaScript syntax plus the deterministic motion, rhythm, concert-voicing, octave, and tuning contracts with Node's built-in test runner.
 
-## Parameter Update Functions
+## Package a single-file edition
 
-### Audio Parameter Setters
-All take DOM element values and update corresponding audio node parameters:
-
-- `attackCtl` → `attack` (0-0.06 seconds)
-- `decayCtl` → `decay` (0.05-1.2 seconds)  
-- `sustainCtl` → `sustain` (0-1)
-- `releaseCtl` → `release` (0.03-2.5 seconds)
-- `toneCtl` → `toneFilter.frequency` (1200-14000 Hz)
-- `presenceCtl` → `presenceFilter.gain` (-6 to +12 dB)
-- `detuneCtl` → `detuneOsc.frequency` (0-25 Hz)
-- `hardCtl` → `hardness` (0-1)
-- `keynoiseCtl` → `keynoise` (0-1)
-- `reverbCtl` → `reverbGain.gain` (0-1)
-
-### Glitch Parameter Setters
-- `glitchMixCtl` → `glitchMix.gain` (0-1)
-- `ringRateCtl` → `ringLFO.frequency` (0.5-200 Hz)
-- `ringDepthCtl` → `ringDepth.gain` (0-1)
-- `crushBitsCtl` → bitcrusher bit depth (4-16)
-- `downsampleCtl` → bitcrusher downsample (1-16)
-- `jitterCtl` → jitter amount (0-50 ms)
-- `stutterProbCtl` → stutter probability (0-0.8)
-- `stutterRepeatsCtl` → stutter repetitions (1-4)
-- `dropProbCtl` → note drop probability (0-0.6)
-
-## MIDI Functions
-
-### MIDI Event Handlers
-**Inputs:** MIDI event objects from `navigator.requestMIDIAccess()`
-**Returns:** void
-**Side Effects:** Triggers `createVoice()` calls and parameter updates
-
-### MIDI Connection
-- `navigator.requestMIDIAccess()` → Promise resolving to MIDIAccess object
-- Returns connection status and available MIDI devices
-
-## Global State Variables
-
-### Audio Context
-- `context`: AudioContext instance
-- `masterGain`: Main output gain node
-- `compressor`: Dynamics compressor
-- `toneFilter`: Low-pass filter for brightness
-- `presenceFilter`: High-shelf filter
-- `reverbConvolver`: Reverb effect
-- `detuneOsc`: Chorus oscillator
-
-### Glitch Chain
-- `ringModGain`: Ring modulation input
-- `ringModOsc`: Ring modulation oscillator
-- `ringDepth`: Ring modulation depth
-- `bitCrusher`: Current bitcrusher processor
-- `glitchMixGain`: Glitch effects mix
-
-### Voice Management
-- `voices`: Array of active voice objects
-- `maxVoices`: Maximum polyphony (8)
-
-## Error Handling
-
-### Audio Context Errors
-- Catches `AudioContext` creation failures
-- Handles browser audio policy restrictions
-
-### MIDI Errors
-- Catches MIDI access permission denials
-- Handles device connection failures
-
-### Parameter Validation
-- Validates MIDI note ranges (0-127)
-- Clamps parameter values to valid ranges
-- Handles invalid note name formats
-
-## Browser Compatibility
-
-### Required Web Audio API Features
-- `AudioContext` or `webkitAudioContext`
-- `GainNode`, `OscillatorNode`, `BiquadFilterNode`
-- `ConvolverNode`, `StereoPannerNode`
-- `ScriptProcessorNode` (legacy)
-- `DynamicsCompressorNode`
-
-### Optional Features
-- MIDI API (`navigator.requestMIDIAccess`)
-- AudioWorklet (for future bitcrusher replacement)
-
-## Function Call Examples
-
-```javascript
-// Create a voice
-const voice = createVoice(60, 0.8, context.currentTime);
-
-// Convert note to MIDI
-const midiNote = noteNameToMidi("C#4"); // returns 61
-
-// Update audio parameter
-toneFilter.frequency.setValueAtTime(8000, context.currentTime);
-
-// Create bitcrusher
-const crusher = createCrusher(8, 4);
-
-// Cleanup
-dispose();
+```bash
+npm run package:otad
 ```
 
-This interface provides complete control over the audio synthesis engine with clear input/output contracts for all functions.
+This writes `dist/hexpiano-otad.html`: a self-contained release page with the styles and JavaScript inlined, the external font import removed, and an embed-aware view that opens directly on the instrument inside an iframe. Pass an output path directly to `node scripts/package-otad.mjs` to place the artifact in another static-site project.
+
+## Structure
+
+```text
+index.html                 Constellation release instrument
+release.css                Constellation visual system
+lab/index.html             Piano Genome Lab
+styles.css                 Genome Lab presentation
+src/constellation-app.js   Harmonic field, gestures, transport, audio scheduler
+src/arp-patterns.js        Pure deterministic motion and rhythm logic
+src/engine.js              Crystal Concert Web Audio voice and signal path
+src/concert-voicing.js     Register, string, strike, and hammer behavior
+src/tuning.js              Temperament math and pitch descriptions
+src/app.js                 Genome Lab keyboard, MIDI, and controls
+test/                      Motion, timing, voicing, octave, and tuning contracts
+cloudstepper.html          Preserved original HEXPIANO interface
+HEXPIANO.js                Preserved original HEXPIANO engine
+```
+
+## Legacy instrument
+
+`cloudstepper.html` and `HEXPIANO.js` remain untouched as the original instrument. The repository tag `legacy-v0` points to the exact pre-lab state.
