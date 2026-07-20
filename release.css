@@ -2,7 +2,7 @@
 
 :root {
   color-scheme: light;
-  --paper: #f8f8f5;
+  --paper: #f5f6f7;
   --white: #ffffff;
   --ink: #111111;
   --muted: #666662;
@@ -11,8 +11,7 @@
   --line-strong: #111111;
   --pink: #ff2f87;
   --pink-soft: #ff8fbd;
-  --pink-pale: #ffe4ef;
-  --shadow: rgba(255, 47, 135, 0.22);
+  --pink-pale: #ffe5ef;
   --sans: "Manrope", Helvetica, Arial, sans-serif;
   --serif: "Instrument Serif", Georgia, serif;
   --mono: "DM Mono", ui-monospace, monospace;
@@ -71,13 +70,7 @@ a {
 }
 
 .orb {
-  position: absolute;
-  width: 40rem;
-  height: 40rem;
-  border-radius: 50%;
-  background: var(--pink);
-  filter: blur(150px);
-  opacity: 0.07;
+  display: none;
 }
 
 .orb-one {
@@ -91,11 +84,7 @@ a {
 }
 
 .grain {
-  position: absolute;
-  inset: 0;
-  opacity: 0.018;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
+  display: none;
 }
 
 .site-header,
@@ -129,7 +118,6 @@ footer {
   color: var(--pink);
   font-size: 17px;
   line-height: 1;
-  filter: drop-shadow(0 0 7px rgba(255, 47, 135, 0.5));
 }
 
 .voice-badge {
@@ -149,7 +137,6 @@ footer {
   height: 7px;
   border-radius: 50%;
   background: var(--pink);
-  box-shadow: 0 0 11px rgba(255, 47, 135, 0.72);
 }
 
 .site-header nav {
@@ -223,26 +210,16 @@ h1 {
 }
 
 h1 em {
-  position: relative;
   display: inline-block;
   color: var(--pink);
-  font-family: var(--serif);
-  font-weight: 400;
-  letter-spacing: -0.045em;
-  transform: rotate(-1.1deg);
+  font-family: var(--sans);
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: -0.075em;
 }
 
 h1 em::after {
-  position: absolute;
-  right: 2%;
-  bottom: -3px;
-  left: 5%;
-  height: 7px;
-  border-top: 3px solid var(--pink);
-  border-radius: 50%;
-  transform: rotate(-1.4deg);
-  content: "";
-  opacity: 0.75;
+  display: none;
 }
 
 .intro-copy {
@@ -260,7 +237,6 @@ h1 em::after {
   border: 2px solid var(--ink);
   border-radius: 0;
   background: var(--white);
-  box-shadow: 13px 13px 0 var(--pink-pale);
 }
 
 .stage-topline {
@@ -313,7 +289,6 @@ body.is-playing #pulse-dot,
 #pulse-dot.flash {
   border-color: var(--pink);
   background: var(--pink);
-  box-shadow: 0 0 13px rgba(255, 47, 135, 0.82);
 }
 
 .voice-count {
@@ -345,9 +320,8 @@ body.is-playing #pulse-dot,
   background:
     linear-gradient(rgba(17, 17, 17, 0.055) 1px, transparent 1px),
     linear-gradient(90deg, rgba(17, 17, 17, 0.055) 1px, transparent 1px),
-    radial-gradient(circle at 50% 48%, rgba(255, 47, 135, 0.09), transparent 31%),
     var(--white);
-  background-size: 44px 44px, 44px 44px, auto, auto;
+  background-size: 44px 44px, 44px 44px, auto;
 }
 
 .hex-field {
@@ -374,16 +348,12 @@ body.is-playing #pulse-dot,
 }
 
 #constellation-shadow {
-  stroke: rgba(255, 47, 135, 0.25);
-  stroke-width: 17;
-  filter: blur(9px);
+  display: none;
 }
 
 #constellation-path {
   stroke: var(--pink);
-  stroke-width: 2.2;
-  stroke-dasharray: 1 8;
-  animation: path-flow 6s linear infinite;
+  stroke-width: 2;
 }
 
 .hex-note {
@@ -410,24 +380,11 @@ body.is-playing #pulse-dot,
 }
 
 .hex-note::before {
-  position: absolute;
-  inset: 6px;
-  border: 1px solid transparent;
-  border-radius: 50%;
-  content: "";
+  display: none;
 }
 
 .hex-note::after {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  top: 8px;
-  left: 50%;
-  border-radius: 50%;
-  background: var(--ink);
-  transform: translateX(-50%);
-  content: "";
-  opacity: 0.2;
+  display: none;
 }
 
 .hex-note .note-name,
@@ -457,23 +414,13 @@ body.is-playing #pulse-dot,
 .hex-note:hover {
   border-color: var(--pink);
   color: var(--pink);
-  box-shadow: 0 0 0 5px var(--pink-pale), 0 0 22px rgba(255, 47, 135, 0.25);
+  background: var(--pink-pale);
 }
 
 .hex-note.selected {
-  border-color: var(--pink);
+  border: 2px solid var(--ink);
   color: var(--white);
   background: var(--pink);
-  box-shadow: 0 0 0 4px var(--white), 0 0 0 6px var(--pink), 0 0 26px rgba(255, 47, 135, 0.34);
-}
-
-.hex-note.selected::before {
-  border-color: rgba(255, 255, 255, 0.32);
-}
-
-.hex-note.selected::after {
-  background: var(--white);
-  opacity: 0.65;
 }
 
 .hex-note.selected .harmonic-coordinate {
@@ -485,7 +432,8 @@ body.is-playing #pulse-dot,
   border-color: var(--ink);
   color: var(--white);
   background: var(--ink);
-  box-shadow: 0 0 0 5px var(--pink), 0 0 32px rgba(255, 47, 135, 0.62);
+  outline: 3px solid var(--pink);
+  outline-offset: 2px;
   scale: 1.12;
 }
 
@@ -537,7 +485,6 @@ body.is-playing #pulse-dot,
   border: 2px solid var(--ink);
   color: var(--white);
   background: var(--ink);
-  box-shadow: 5px 5px 0 var(--pink);
 }
 
 .play-button strong {
@@ -549,7 +496,6 @@ body.is-playing #pulse-dot,
 .play-button:hover {
   color: var(--ink);
   background: var(--pink);
-  box-shadow: 0 0 24px rgba(255, 47, 135, 0.35);
 }
 
 .stop-symbol,
@@ -694,7 +640,6 @@ body.is-playing .play-button {
   color: var(--white);
   border-color: var(--pink);
   background: var(--pink);
-  box-shadow: 4px 4px 0 var(--pink-pale);
 }
 
 .motion-card.selected > span,
@@ -774,7 +719,7 @@ input[type="range"]::-webkit-slider-thumb {
   border: 2px solid var(--white);
   border-radius: 50%;
   background: var(--pink);
-  box-shadow: 0 0 0 1px var(--ink), 0 0 9px rgba(255, 47, 135, 0.45);
+  box-shadow: 0 0 0 1px var(--ink);
   appearance: none;
 }
 
@@ -868,12 +813,6 @@ footer {
   text-transform: uppercase;
 }
 
-@keyframes path-flow {
-  to {
-    stroke-dashoffset: -48;
-  }
-}
-
 @media (max-width: 920px) {
   .intro {
     grid-template-columns: 1fr;
@@ -929,10 +868,6 @@ footer {
     font-size: clamp(53px, 18vw, 86px);
   }
 
-  .instrument-shell {
-    box-shadow: 7px 7px 0 var(--pink-pale);
-  }
-
   .stage-topline {
     grid-template-columns: 1fr auto;
     padding-inline: 14px;
@@ -960,7 +895,6 @@ footer {
   .play-button {
     min-width: 0;
     padding-inline: 12px;
-    box-shadow: 3px 3px 0 var(--pink);
   }
 
   .clear-button {
